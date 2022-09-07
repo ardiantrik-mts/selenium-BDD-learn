@@ -4,23 +4,32 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.junit.Assert;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pages.loginPage;
 
 public class LoginSteps {
-	WebDriver driver = null;
+	WebDriver driver;
 	
+	@Before("@LoginTest")
+	public void setUpTest() {
+		WebDriverManager.chromedriver().setup();
+		driver = new ChromeDriver();
+	}
+	
+	@After("@LoginTest")
+	public void tearDownTest() {
+//		driver.close();
+		driver.quit();
+	}
 	
 	@Given("user is on login page")
 	public void navigateLoginPage() {
-		WebDriverManager.chromedriver().driverVersion("104.0.5112.79").setup();
-		driver = new ChromeDriver();
-		
 		driver.get("https://google.com");
 		driver.navigate().to("https://saucedemo.com");
 		System.out.println("Given - is on login page - SUCCESS");
-
 	}
 
 	@When("^user enters (.*) and (.*)$")
@@ -45,7 +54,6 @@ public class LoginSteps {
 	@Then("user is navigated to the inventory page")
 	public void navigatedToInventoryPage() {
 		System.out.println("Then - user is navigated to the inventory page");
-		driver.close();
 	}
 	
 	@Then("^user should see a failed login alert (.*)$")
@@ -56,6 +64,5 @@ public class LoginSteps {
 		alert_text = loginPage.getAlertFailedLogin();
 		Assert.assertEquals(alert_text, alert_text_expected);
 		System.out.println("Then - user should see a failed login alert");
-		driver.close();
 	}
 }
