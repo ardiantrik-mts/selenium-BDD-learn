@@ -50,6 +50,47 @@ public class TransactionsStep {
 			inventoryPage.clickRemoveProduct(product_id);
 		}
 	}
+	
+	@When("user click cart icon")
+	public void cartIconAction() {
+		inventoryPage inventoryPage = new inventoryPage(driver);
+		
+		inventoryPage.clickCart();
+	}
+	
+	@When("user click {string} button")
+	public void cartActionButton(String button_type) {
+		cartPage cartPage = new cartPage(driver);
+		
+		if(button_type.equals("Checkout")) {
+			cartPage.clickCheckout();			
+		} 
+
+		if(button_type.equals("Continue")) {
+			cartPage.clickContinue();
+		}
+	
+		if(button_type.equals("Finish")) {
+			cartPage.clickFinish();
+		}
+	}
+
+	@When("^user set the recipient data with (.*), (.*), (.*)$")
+	public void setRecipientData(String first_name, String last_name, String postal_code) {
+		cartPage cartPage = new cartPage(driver);
+		
+		cartPage.setFirstName(first_name);
+		cartPage.setLastName(last_name);
+		cartPage.setPostalCode(postal_code);
+	}
+
+	@Then("user should see the transaction complete in the current page")
+	public void validateCompletePage() {
+		cartPage cartPage = new cartPage(driver);
+		
+		String isComplete = cartPage.getContainerComplete();
+		Assert.assertEquals(isComplete, "complete");
+	}
 
 	@Then("cart counter should reflect number {int} based on the sum of products in cart")
 	public void validateCartCounter(Integer productsCount) {
